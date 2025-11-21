@@ -1,0 +1,38 @@
+{% if tareas %}
+    <div class="list-group">
+        {% for tarea in tareas %}
+            <div class="list-group-item d-flex justify-content-between align-items-center {% if tarea.completada %}list-group-item-success{% endif %}">
+                <div>
+                    <!-- Checkbox para toggle - SIN FORM, más simple -->
+                    <input type="checkbox" 
+                           class="form-check-input me-2" 
+                           {% if tarea.completada %}checked{% endif %}
+                           hx-post="{% url 'toggle_tarea' tarea.id %}"
+                           hx-target="#lista-tareas"
+                           hx-swap="innerHTML">
+                    
+                    <span class="{% if tarea.completada %}text-decoration-line-through text-muted{% endif %}">
+                        {{ tarea.titulo }}
+                    </span>
+                    
+                    <small class="text-muted ms-2">
+                        {{ tarea.fecha_creacion|date:"d/m/Y H:i" }}
+                    </small>
+                </div>
+                
+                <!-- Botón de eliminar - SIN FORM, más simple -->
+                <button class="btn btn-danger btn-sm"
+                        hx-post="{% url 'eliminar_tarea' tarea.id %}"
+                        hx-target="#lista-tareas"
+                        hx-swap="innerHTML"
+                        hx-confirm="¿Estás seguro de eliminar esta tarea?">
+                    🗑️ Eliminar
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info text-center">
+        🎉 ¡No hay tareas! Agrega tu primera tarea arriba.
+    </div>
+{% endif %}
